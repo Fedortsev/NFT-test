@@ -6,7 +6,7 @@ const orderRouter = express.Router();
 
 orderRouter.post("/place",authMiddleware,placeOrder);
 orderRouter.post("/verify", verifyOrder)
-orderRouter.post("/userorders",authMiddleware,userOrders)
+orderRouter.get("/userorders",authMiddleware,userOrders)
 orderRouter.get('/list',authMiddleware, requireAdmin, listOrders)
 orderRouter.post('/status', authMiddleware, requireAdmin, updateStatus)
 
