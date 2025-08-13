@@ -69,4 +69,17 @@ const registerUser = async (req, res) =>{
     }
 }
 
-export {loginUser, registerUser}
+const getUserRole = async (req, res) => {
+    try {
+        const role = req.user?.role;
+        if (!role) {
+            return res.status(404).json({ success:false, message:'User not found' });
+        }
+        res.json({ success:true, role });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success:false, message:'Error' });
+    }
+}
+
+export {loginUser, registerUser, getUserRole}
