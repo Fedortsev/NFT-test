@@ -42,11 +42,11 @@ const registerUser = async (req, res) =>{
 
         //validating email format and strong password
         if(!validator.isEmail(email)){
-            return res.json({success:false, message:'Please enter a valid email'})
+            return res.status(401).json({success:false, message:'Please enter a valid email'})
         }
 
         if(password.length<8){
-            return res.json({success:false, message:'Please enter a strong password'})
+            return res.status(401).json({success:false, message:'Please enter a strong password'})
         }
 
         // hashing user password
@@ -65,7 +65,7 @@ const registerUser = async (req, res) =>{
 
     } catch (error) {
         console.log(error)
-        res.json({success:false, message:'Error'})
+        res.status(500).json({success:false, message:'Error'})
     }
 }
 
