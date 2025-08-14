@@ -6,7 +6,6 @@ import axios from "axios";
 
 const LoginPopup = ({ setShowLogin }) => {
   const { url, setToken, setUserRole } = useContext(StoreContext);
-
   const [currentState, setCurrentState] = useState("Login");
   const [data, setData] = useState({
     name: "",
@@ -31,15 +30,13 @@ const LoginPopup = ({ setShowLogin }) => {
 
     try {
       const response = await axios.post(newUrl, data);
-
       if (response.data.success) {
         setToken(response.data.token);
         setUserRole(response.data.role);
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("userRole", response.data.role);
         setShowLogin(false);
-      } else {
-        alert(response.data.message);
+        window.location.reload();
       }
     } catch (error) {
       if (error.response) {
@@ -74,7 +71,6 @@ const LoginPopup = ({ setShowLogin }) => {
               required
             />
           )}
-
           <input
             name="email"
             onChange={onChangeHandler}
@@ -92,7 +88,6 @@ const LoginPopup = ({ setShowLogin }) => {
             required
           />
         </div>
-
         <button type="submit">
           {currentState === "Sign Up" ? "Create account" : "Login"}
         </button>
@@ -115,4 +110,5 @@ const LoginPopup = ({ setShowLogin }) => {
     </div>
   );
 };
+
 export default LoginPopup;

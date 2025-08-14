@@ -5,12 +5,10 @@ export const StoreContext = createContext(null);
 
 const StoreContextProvider = (props) => {
   const [cartItems, setCartItems] = useState({});
+  const [userRole, setUserRole] = useState(null);
+  const [food_list, setFoodList] = useState([]);
   const url = "http://localhost:4000";
   const [token, setToken] = useState("");
-
-  const [food_list, setFoodList] = useState([]);
-  const [userRole, setUserRole] = useState(null);
-  const [userId, setUserId] = useState(null);
 
   const addToCart = async (itemId) => {
     if (!cartItems || !cartItems[itemId]) {
@@ -46,7 +44,6 @@ const StoreContextProvider = (props) => {
         totalAmount += itemInfo.price * cartItems[item];
       }
     }
-
     return totalAmount;
   };
 
@@ -62,8 +59,6 @@ const StoreContextProvider = (props) => {
       { headers: { token } }
     );
     setCartItems(response.data.cartData);
-    setUserRole(response.data.role);
-    setUserId(response.data.userId); // Assuming userId is returned in cart data
   };
 
   const checkUserRole = async (token) => {
@@ -75,8 +70,17 @@ const StoreContextProvider = (props) => {
         setUserRole(response.data.role);
       }
     } catch (error) {
-      console.error("Error checking user role:", error);
+      setUserRole("user");
     }
+  };
+
+  const logout = () => {
+    setToken(null);
+    setUserRole("user");
+    setCartItems({});
+    localStorage.removeItem("token");
+    localStorage.removeItem("userRole");
+    window.location.reload();
   };
 
   useEffect(() => {
@@ -86,20 +90,11 @@ const StoreContextProvider = (props) => {
       if (storedToken) {
         setToken(storedToken);
         await loadCartData(storedToken);
-        await checkUserRole(storedToken); // Add this line
+        await checkUserRole(storedToken);
       }
     }
     loadData();
   }, []);
-
-  // Add logout function to clear role
-  const logout = () => {
-    setToken(null);
-    setUserRole("user"); // Set role to 'user' instead of null
-    setCartItems({}); // Clear cart items
-    localStorage.removeItem("token");
-    localStorage.removeItem("userRole");
-  };
 
   const contextValue = {
     food_list,
@@ -113,8 +108,6 @@ const StoreContextProvider = (props) => {
     setToken,
     userRole,
     setUserRole,
-    userId,
-    setUserId,
     logout,
   };
 
