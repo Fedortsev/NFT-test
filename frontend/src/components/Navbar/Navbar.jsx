@@ -7,15 +7,9 @@ import { StoreContext } from "./../context/StoreContext";
 const Navbar = ({ setShowLogin }) => {
   const [menu, setMenu] = useState("home");
 
-  const { getTotalCartAmount, token, setToken } = useContext(StoreContext);
+  const { getTotalCartAmount, token, logout } = useContext(StoreContext);
 
   const navigate = useNavigate();
-
-  const logout = () => {
-    localStorage.removeItem("token");
-    setToken("");
-    navigate("/");
-  };
 
   return (
     <div className="navbar">

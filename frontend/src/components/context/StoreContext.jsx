@@ -75,19 +75,23 @@ const StoreContextProvider = (props) => {
   };
 
   const logout = () => {
-    setToken(null);
-    setUserRole("user");
-    setCartItems({});
     localStorage.removeItem("token");
     localStorage.removeItem("userRole");
-    window.location.reload();
+    setToken(null);
+    setUserRole(null);
+    setCartItems({});
+    window.location.replace("/");
   };
 
   useEffect(() => {
     async function loadData() {
       await fetchFoodList();
       const storedToken = localStorage.getItem("token");
-      if (storedToken) {
+      if (!storedToken) {
+        setUserRole(null);
+        setToken(null);
+        setCartItems({});
+      } else {
         setToken(storedToken);
         await loadCartData(storedToken);
         await checkUserRole(storedToken);
