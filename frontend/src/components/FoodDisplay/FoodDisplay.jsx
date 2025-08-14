@@ -1,19 +1,34 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import "./FoodDisplay.css";
 import { StoreContext } from "../context/StoreContext";
 import FoodItem from "../FoodItem/FoodItem";
+import AdminProductModal from "../AdminProductModal/AdminProductModal";
 
 const FoodDisplay = ({ category }) => {
-  const { food_list } = useContext(StoreContext);
+  const { food_list, userRole } = useContext(StoreContext);
+  const [showAddModal, setShowAddModal] = useState(false);
+  console.log(userRole);
+
   return (
     <div className="food-display" id="food-display">
-      <h2>Top dishes near you</h2>
+      <div className="food-display-header">
+        <h2>Top dishes near you</h2>
+        {userRole === "admin" && (
+          <button
+            className="add-product-btn"
+            onClick={() => setShowAddModal(true)}
+          >
+            <span>+</span> Add New Product
+          </button>
+        )}
+      </div>
+
       <div className="food-display-list">
-        {food_list.map((item, index) => {
+        {food_list.map((item) => {
           if (category === "All" || category === item.category) {
             return (
               <FoodItem
-                key={index}
+                key={item._id}
                 id={item._id}
                 name={item.name}
                 description={item.description}
@@ -22,8 +37,11 @@ const FoodDisplay = ({ category }) => {
               />
             );
           }
+          return null;
         })}
       </div>
+
+      {showAddModal && <AdminProductModal setShowModal={setShowAddModal} />}
     </div>
   );
 };

@@ -9,6 +9,8 @@ const StoreContextProvider = (props) => {
   const [token, setToken] = useState("");
 
   const [food_list, setFoodList] = useState([]);
+  const [userRole, setUserRole] = useState(null);
+  const [userId, setUserId] = useState(null);
 
   const addToCart = async (itemId) => {
     if (!cartItems || !cartItems[itemId]) {
@@ -60,18 +62,44 @@ const StoreContextProvider = (props) => {
       { headers: { token } }
     );
     setCartItems(response.data.cartData);
+    setUserRole(response.data.role);
+    setUserId(response.data.userId); // Assuming userId is returned in cart data
+  };
+
+  const checkUserRole = async (token) => {
+    try {
+      const response = await axios.get(`${url}/api/user/role`, {
+        headers: { token },
+      });
+      if (response.data.success) {
+        setUserRole(response.data.role);
+      }
+    } catch (error) {
+      console.error("Error checking user role:", error);
+    }
   };
 
   useEffect(() => {
     async function loadData() {
       await fetchFoodList();
-      if (localStorage.getItem("token")) {
-        setToken(localStorage.getItem("token"));
-        await loadCartData(localStorage.getItem("token"));
+      const storedToken = localStorage.getItem("token");
+      if (storedToken) {
+        setToken(storedToken);
+        await loadCartData(storedToken);
+        await checkUserRole(storedToken); // Add this line
       }
     }
     loadData();
   }, []);
+
+  // Add logout function to clear role
+  const logout = () => {
+    setToken(null);
+    setUserRole("user"); // Set role to 'user' instead of null
+    setCartItems({}); // Clear cart items
+    localStorage.removeItem("token");
+    localStorage.removeItem("userRole");
+  };
 
   const contextValue = {
     food_list,
@@ -83,6 +111,11 @@ const StoreContextProvider = (props) => {
     url,
     token,
     setToken,
+    userRole,
+    setUserRole,
+    userId,
+    setUserId,
+    logout,
   };
 
   return (

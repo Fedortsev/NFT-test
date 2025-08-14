@@ -5,7 +5,7 @@ import { StoreContext } from "./../context/StoreContext";
 import axios from "axios";
 
 const LoginPopup = ({ setShowLogin }) => {
-  const { url, setToken } = useContext(StoreContext);
+  const { url, setToken, setUserRole } = useContext(StoreContext);
 
   const [currentState, setCurrentState] = useState("Login");
   const [data, setData] = useState({
@@ -34,7 +34,9 @@ const LoginPopup = ({ setShowLogin }) => {
 
       if (response.data.success) {
         setToken(response.data.token);
+        setUserRole(response.data.role);
         localStorage.setItem("token", response.data.token);
+        localStorage.setItem("userRole", response.data.role);
         setShowLogin(false);
       } else {
         alert(response.data.message);
