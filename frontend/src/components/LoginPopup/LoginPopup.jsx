@@ -36,7 +36,6 @@ const LoginPopup = ({ setShowLogin }) => {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("userRole", response.data.role);
         setShowLogin(false);
-        window.location.reload();
       }
     } catch (error) {
       if (error.response) {
